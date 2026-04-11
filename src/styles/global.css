@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+:root {
+  --page-bg: #f5efe4;
+  --panel: rgba(255, 250, 242, 0.84);
+  --panel-strong: rgba(255, 247, 235, 0.96);
+  --line: rgba(97, 63, 36, 0.16);
+  --text: #21160f;
+  --muted: #5f4b3f;
+  --accent: #ad5f2d;
+  --accent-strong: #8d4317;
+  --accent-soft: #f0c49b;
+  --forest: #345247;
+  --shadow: 0 24px 80px rgba(52, 34, 18, 0.12);
+}
+
+html {
+  background:
+    radial-gradient(circle at top, rgba(232, 185, 114, 0.35), transparent 28%),
+    linear-gradient(180deg, #fbf7f1 0%, var(--page-bg) 50%, #efe6d7 100%);
+  color: var(--text);
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  font-family: "Source Sans 3", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  letter-spacing: -0.02em;
+}
+
+.app-shell {
+  position: relative;
+}
+
+.app-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.2), transparent 14%, transparent 86%, rgba(255, 255, 255, 0.2)),
+    radial-gradient(circle at 20% 10%, rgba(173, 95, 45, 0.08), transparent 24%),
+    radial-gradient(circle at 80% 0%, rgba(52, 82, 71, 0.08), transparent 24%);
+}
+
+.prose-content {
+  color: var(--text);
+  max-width: 46rem;
+}
+
+.prose-content h2,
+.prose-content h3,
+.prose-content h4 {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.prose-content h2 {
+  font-size: 1.95rem;
+}
+
+.prose-content h3 {
+  font-size: 1.45rem;
+}
+
+.prose-content p,
+.prose-content li {
+  color: rgba(33, 22, 15, 0.9);
+  font-size: 1.1rem;
+  line-height: 1.85;
+}
+
+.prose-content p,
+.prose-content ul,
+.prose-content ol,
+.prose-content blockquote,
+.prose-content pre {
+  margin-block: 1.1rem;
+}
+
+.prose-content ul,
+.prose-content ol {
+  padding-left: 1.4rem;
+}
+
+.prose-content a {
+  color: var(--accent-strong);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
+}
+
+.prose-content blockquote {
+  border-left: 4px solid rgba(173, 95, 45, 0.4);
+  padding-left: 1rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.prose-content img {
+  border-radius: 1.5rem;
+  margin-block: 2rem;
+}
+
+.soft-panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}

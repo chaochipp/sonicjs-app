@@ -34,7 +34,7 @@ export default {
         helpText: 'A short summary of the post'
       },
       content: {
-        type: 'quill',
+        type: 'tinymce',
         title: 'Content',
         required: true
       },
@@ -46,6 +46,14 @@ export default {
         type: 'string',
         title: 'Author',
         required: true
+      },
+      category: {
+        type: 'select',
+        title: 'Category',
+        enum: ['guides', 'references', 'tutorials', 'news'],
+        enumLabels: ['Guides', 'References', 'Tutorials', 'News'],
+        required: true,
+        default: 'guides'
       },
       publishedAt: {
         type: 'datetime',
@@ -62,9 +70,26 @@ export default {
         type: 'string',
         title: 'Tags',
         helpText: 'Comma-separated tags'
+      },
+      seoTitle: {
+        type: 'string',
+        title: 'SEO Title',
+        maxLength: 70
+      },
+      seoDescription: {
+        type: 'textarea',
+        title: 'SEO Description',
+        maxLength: 160
+      },
+      featured: {
+        type: 'select',
+        title: 'Featured Post',
+        enum: ['false', 'true'],
+        enumLabels: ['No', 'Yes'],
+        default: 'false'
       }
     },
-    required: ['title', 'slug', 'content', 'author']
+    required: ['title', 'slug', 'content', 'author', 'category']
   },
 
   // List view configuration

@@ -1,0 +1,53 @@
+---
+import { formatCategoryLabel, type PublicPost } from "../lib/public-content";
+
+interface Props {
+  post: PublicPost;
+  variant?: "default" | "featured";
+}
+
+const { post, variant = "default" } = Astro.props;
+const featured = variant === "featured";
+---
+
+<article class:list={[
+  "group soft-panel relative overflow-hidden rounded-[2rem] transition duration-300 hover:-translate-y-1 hover:shadow-2xl",
+  featured ? "p-7 sm:p-8" : "p-6"
+]}>
+  <a href={`/posts/${post.slug}`} class="absolute inset-0 z-10" aria-label={`Read ${post.title}`}></a>
+
+  <div class="relative z-0 space-y-4">
+    <div class="flex flex-wrap items-center gap-3 text-[0.75rem] font-semibold uppercase tracking-[0.28em] text-[var(--muted)]">
+      <span class="rounded-full bg-[var(--accent-soft)] px-3 py-1 text-[var(--accent-strong)]">
+        {formatCategoryLabel(post.category)}
+      </span>
+      <span>{post.publishedAtLabel}</span>
+      <span>{post.author}</span>
+    </div>
+
+    <div class="space-y-3">
+      <h2 class:list={[
+        "font-semibold leading-tight text-[var(--text)] transition group-hover:text-[var(--accent-strong)]",
+        featured ? "max-w-4xl text-4xl sm:text-5xl" : "text-2xl"
+      ]}>
+        {post.title}
+      </h2>
+      <p class:list={[
+        "max-w-3xl text-[var(--muted)]",
+        featured ? "text-lg leading-9" : "text-base leading-8"
+      ]}>
+        {post.excerpt}
+      </p>
+    </div>
+
+    {post.tags.length > 0 && (
+      <div class="flex flex-wrap gap-2">
+        {post.tags.slice(0, featured ? 4 : 3).map((tag) => (
+          <span class="rounded-full border border-[var(--line)] px-3 py-1 text-xs text-[var(--muted)]">
+            {tag}
+          </span>
+        ))}
+      </div>
+    )}
+  </div>
+</article>

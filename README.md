@@ -1,85 +1,110 @@
-# SonicJS Deploy Now
+# TopHeroes Hub on SonicJS + Astro
 
-A ready-to-deploy SonicJS headless CMS application for Cloudflare Workers.
+This project now combines two layers in one Cloudflare Worker deployment:
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/lane711/sonicjs-deploy-now)
+- A public Astro frontend for `topheroes.cwcat.com`
+- A SonicJS CMS mounted under `/api`
 
-## What is SonicJS?
+The intended production shape is:
 
-SonicJS is a modern, TypeScript-first headless CMS built for Cloudflare's edge platform. It's **6x faster** than traditional Node/Express applications and deploys globally in seconds.
+- `https://topheroes.cwcat.com/` for the public site
+- `https://topheroes.cwcat.com/api` for the headless CMS and admin/API routes
 
-**[Learn more at sonicjs.com](https://sonicjs.com)**
+## Stack
 
-## Quick Start
+- SonicJS for content management on Cloudflare Workers
+- Astro for the public blog frontend
+- Tailwind CSS for the design system
+- Cloudflare D1 and R2 for storage
+- Vitest and Playwright for test coverage
 
-### One-Click Deploy
+## Public Routes
 
-Click the "Deploy to Cloudflare" button above to deploy this starter in seconds. Cloudflare will:
+- `/` homepage with featured and recent content
+- `/posts` searchable article archive
+- `/posts/[slug]` article detail pages
+- `/categories/[slug]` category-specific listing pages
+- `/api/public/posts` public JSON API for published content
+- `/api/admin` SonicJS admin
 
-1. Clone this repo to your GitHub account
-2. Provision a D1 database and R2 bucket
-3. Deploy your CMS to Cloudflare Workers
-4. Set up CI/CD for future deployments
+## Content Model
 
-### Manual Setup
+The `blog-posts` collection is configured for editorial content such as:
+
+- guides
+- references
+- tutorials
+- news
+
+Posts include category, SEO fields, tags, publish date, and a featured flag so the frontend can support search, filtering, and featured placements.
+
+## Local Development
+
+Install dependencies:
 
 ```bash
-# Clone this repository
-git clone https://github.com/lane711/sonicjs-deploy-now.git
-cd sonicjs-deploy-now
-
-# Install dependencies
 npm install
+```
 
-# Start the development server
+Run the Astro frontend:
+
+```bash
 npm run dev
-
-# Visit http://localhost:8787
 ```
 
-## Project Structure
+Run the Worker preview:
 
-```
-sonicjs-deploy-now/
-├── src/
-│   ├── index.ts              # Application entry point
-│   └── collections/          # Your content collections
-│       └── blog-posts.collection.ts
-├── wrangler.toml             # Cloudflare configuration
-├── package.json
-└── tsconfig.json
+```bash
+npm run build
+npm run dev:worker
 ```
 
-## Creating Collections
+Apply D1 migrations locally:
 
-Add new collections in `src/collections/` and register them in `src/index.ts`:
+```bash
+npm run db:migrate
+```
 
-```typescript
-import myCollection from './collections/my-collection'
+Configure TinyMCE locally in `.dev.vars`:
 
-registerCollections([
-  blogPostsCollection,
-  myCollection,  // Add your collection here
-])
+```bash
+TINYMCE_API_KEY=your-tinymce-api-key
+```
+
+The worker bootstraps the SonicJS `tinymce-plugin` settings from `TINYMCE_API_KEY` automatically on request startup.
+
+## Tests
+
+Run unit tests:
+
+```bash
+npm test
+```
+
+Run end-to-end tests:
+
+```bash
+npm run e2e
 ```
 
 ## Deployment
 
-```bash
-# Deploy to Cloudflare Workers
-npm run deploy
+Build the Astro site and deploy the combined Worker:
 
-# Apply database migrations to production
-npm run db:migrate:prod
+```bash
+npm run deploy
 ```
 
-## Resources
+The current Wrangler config includes a production custom domain entry for `topheroes.cwcat.com`. You still need the matching DNS and Cloudflare Worker domain binding configured in your Cloudflare account.
 
-- [Documentation](https://sonicjs.com/quickstart)
-- [API Reference](https://sonicjs.com/api)
-- [GitHub](https://github.com/lane711/sonicjs)
-- [Discord Community](https://discord.gg/8bMy6bv3sZ)
+Set the TinyMCE API key for production before deploying:
 
-## License
+```bash
+wrangler secret put TINYMCE_API_KEY
+```
 
-MIT License - see the main [SonicJS repository](https://github.com/lane711/sonicjs) for details.
+Then redeploy:
+
+```bash
+npm run deploy
+```

@@ -4,20 +4,37 @@
   "description": "SonicJS Deploy Now - Deploy to Cloudflare Workers in one click",
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
+    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "dev:worker": "wrangler dev",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "preview": "wrangler dev",
+    "deploy": "ASTRO_TELEMETRY_DISABLED=1 astro build && wrangler deploy",
+    "postinstall": "patch-package",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "e2e": "playwright test",
     "db:migrate": "wrangler d1 migrations apply DB --local",
     "db:migrate:prod": "wrangler d1 migrations apply DB --remote"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^13.1.8",
+    "@playwright/test": "^1.59.1",
     "@sonicjs-cms/core": "^2",
+    "@tailwindcss/vite": "^4.2.2",
+    "astro": "^6.1.5",
     "drizzle-orm": "^0.44.0",
     "hono": "^4.0.0",
+    "tailwindcss": "^4.2.2",
+    "vitest": "^4.1.4",
     "zod": "^4.0.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20241205.0",
+    "patch-package": "^8.0.1",
     "typescript": "^5.3.3",
     "wrangler": "^4.0.0"
+  },
+  "overrides": {
+    "vite": "^7.1.12"
   }
 }

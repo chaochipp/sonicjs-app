@@ -1,0 +1,32 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link
+      rel="icon"
+      type="image/jpeg"
+      href="https://cdn.myportfolio.com/6c065f886591575ac6f73b96977b4569/7fe34544-9563-43a5-a91a-f32974321637_carw_1x1x32.jpg?h=74b1914317391e4fa0832849d89602eb"
+    />
+    <link
+      rel="shortcut icon"
+      href="https://cdn.myportfolio.com/6c065f886591575ac6f73b96977b4569/7fe34544-9563-43a5-a91a-f32974321637_carw_1x1x32.jpg?h=74b1914317391e4fa0832849d89602eb"
+    />
+  </head>
+  <body class="app-shell antialiased">
+    <slot />
+  </body>
+</html>

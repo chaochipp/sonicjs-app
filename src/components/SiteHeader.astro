@@ -1,0 +1,42 @@
+---
+const links = [
+  { href: "/", label: "Home" },
+  { href: "/posts", label: "All Articles" },
+  { href: "/categories/guides", label: "Guides" },
+  { href: "/categories/references", label: "References" },
+  { href: "/categories/tutorials", label: "Tutorials" }
+]
+---
+
+<header class="mx-auto w-full max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
+  <div class="soft-panel rounded-[2rem] px-5 py-4 sm:px-7">
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <a href="/" class="flex items-center gap-3 text-[var(--text)]">
+        <span class="grid h-11 w-11 place-items-center rounded-2xl bg-[var(--accent)] text-sm font-bold uppercase tracking-[0.3em] text-white">
+          TH
+        </span>
+        <div>
+          <p class="text-xs uppercase tracking-[0.35em] text-[var(--muted)]">TopHeroes Knowledge Base</p>
+          <p class="text-xl font-semibold">Guides, references, and progression notes</p>
+        </div>
+      </a>
+
+      <nav class="flex flex-wrap items-center gap-2 text-sm text-[var(--muted)]">
+        {links.map((link) => (
+          <a
+            href={link.href}
+            class="rounded-full border border-[var(--line)] px-4 py-2 transition hover:border-[var(--accent)] hover:bg-white/60 hover:text-[var(--accent-strong)]"
+          >
+            {link.label}
+          </a>
+        ))}
+        <a
+          href="/admin"
+          class="rounded-full bg-[var(--forest)] px-4 py-2 font-semibold text-white transition hover:opacity-90"
+        >
+          CMS
+        </a>
+      </nav>
+    </div>
+  </div>
+</header>

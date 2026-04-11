@@ -1,0 +1,54 @@
+---
+import PostCard from "../../components/PostCard.astro";
+import SearchPanel from "../../components/SearchPanel.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { fetchPosts } from "../../lib/public-api";
+import { formatCategoryLabel, slugifyCategory } from "../../lib/public-content";
+
+const slug = slugifyCategory(Astro.params.slug);
+const q = Astro.url.searchParams.get("q") ?? "";
+
+const response = await fetchPosts(Astro.url, {
+  q,
+  category: slug,
+  page: Number(Astro.url.searchParams.get("page") ?? "1"),
+  pageSize: 9
+});
+
+const label = formatCategoryLabel(slug);
+---
+
+<BaseLayout
+  title={`${label} | TopHeroes articles`}
+  description={`Browse ${label.toLowerCase()} for TopHeroes with search and category filtering.`}
+>
+  <SiteHeader />
+
+  <main class="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 sm:px-6 lg:px-8">
+    <section class="soft-panel rounded-[2.5rem] px-6 py-8 sm:px-8">
+      <p class="text-xs uppercase tracking-[0.35em] text-[var(--muted)]">Category</p>
+      <h1 class="mt-3 text-5xl font-semibold leading-tight text-[var(--text)]">{label}</h1>
+      <p class="mt-4 max-w-3xl text-lg leading-8 text-[var(--muted)]">
+        Focused reading for {label.toLowerCase()}. Search within this category to find the exact guide or reference page.
+      </p>
+    </section>
+
+    <SearchPanel action="/posts" categories={response.categories} q={q} selectedCategory={slug} />
+
+    {response.items.length > 0 ? (
+      <section class="grid gap-5 lg:grid-cols-3">
+        {response.items.map((post) => (
+          <PostCard post={post} />
+        ))}
+      </section>
+    ) : (
+      <section class="soft-panel rounded-[2rem] px-6 py-10 text-center">
+        <h2 class="text-3xl font-semibold text-[var(--text)]">No {label.toLowerCase()} articles matched.</h2>
+        <p class="mt-3 text-base text-[var(--muted)]">
+          Try another keyword or return to the full archive.
+        </p>
+      </section>
+    )}
+  </main>
+</BaseLayout>

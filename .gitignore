@@ -4,6 +4,8 @@ node_modules/
 # Build output
 dist/
 .wrangler/
+.astro/
+test-results/
 
 # Environment files
 .dev.vars
@@ -27,3 +29,4 @@ npm-debug.log*
 
 # Local database
 .mf/
+docs

@@ -1,0 +1,27 @@
+diff --git a/node_modules/@sonicjs-cms/core/dist/chunk-55RDMDOP.js b/node_modules/@sonicjs-cms/core/dist/chunk-55RDMDOP.js
+index 57a78ce..b86f3e1 100644
+--- a/node_modules/@sonicjs-cms/core/dist/chunk-55RDMDOP.js
++++ b/node_modules/@sonicjs-cms/core/dist/chunk-55RDMDOP.js
+@@ -557,6 +557,13 @@ function renderCatalystSidebar(currentPath = "", user, dynamicMenuItems, isMobil
+       allMenuItems.push(...dynamicMenuItems);
+     }
+   }
++  const dedupedMenuItems = [];
++  const seenMenuPaths = /* @__PURE__ */ new Set();
++  for (const item of allMenuItems) {
++    if (seenMenuPaths.has(item.path)) continue;
++    seenMenuPaths.add(item.path);
++    dedupedMenuItems.push(item);
++  }
+   const pluginMenuMarker = !dynamicMenuItems || dynamicMenuItems.length === 0 ? "<!-- DYNAMIC_PLUGIN_MENU -->" : "";
+   const closeButton = isMobile ? `
+     <div class="-mb-3 px-4 pt-3">
+@@ -580,7 +587,7 @@ function renderCatalystSidebar(currentPath = "", user, dynamicMenuItems, isMobil
+       <!-- Sidebar Body -->
+       <div class="flex flex-1 flex-col overflow-y-auto p-4">
+         <div class="flex flex-col gap-0.5">
+-          ${allMenuItems.map((item) => {
++          ${dedupedMenuItems.map((item) => {
+     const isActive = currentPath === item.path || item.path !== "/admin" && currentPath?.startsWith(item.path);
+     return `
+               <span class="relative">

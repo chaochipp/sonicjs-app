@@ -1,10 +1,14 @@
 name = "sonicjs-app"
-main = "src/index.ts"
-compatibility_date = "2024-01-01"
-compatibility_flags = ["nodejs_compat"]
+main = "src/worker.ts"
+compatibility_date = "2026-04-11"
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 
 # Cloudflare Workers settings
 workers_dev = true
+
+[assets]
+binding = "ASSETS"
+directory = "./dist"
 
 # D1 Database
 [[d1_databases]]
@@ -26,6 +30,9 @@ ENVIRONMENT = "development"
 [env.production]
 name = "sonicjs-app-production"
 vars = { ENVIRONMENT = "production" }
+routes = [
+  { pattern = "topheroes.cwcat.com", custom_domain = true }
+]
 
 # Observability
 [observability]

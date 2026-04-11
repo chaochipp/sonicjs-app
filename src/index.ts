@@ -30,4 +30,6 @@ const config: SonicJSConfig = {
 }
 
 // Create and export the application
-export default createSonicJSApp(config)
+const sonicApp = createSonicJSApp(config)
+
+export default sonicApp
