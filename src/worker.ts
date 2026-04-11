@@ -6,9 +6,9 @@ import { syncTinyMceApiKey } from './lib/tinymce-settings'
 
 type Bindings = {
   ASSETS: Fetcher
-  BUCKET: R2Bucket
   DB: D1Database
   ENVIRONMENT: string
+  MEDIA_BUCKET: R2Bucket
   TINYMCE_API_KEY?: string
 }
 
@@ -46,6 +46,8 @@ export default {
       pathname.startsWith('/auth/') ||
       pathname === '/admin' ||
       pathname.startsWith('/admin/') ||
+      pathname === '/files' ||
+      pathname.startsWith('/files/') ||
       pathname === '/media' ||
       pathname.startsWith('/media/')
     ) {

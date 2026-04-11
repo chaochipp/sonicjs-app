@@ -5,49 +5,63 @@ import SiteHeader from "../components/SiteHeader.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { fetchPosts } from "../lib/public-api";
 
-const featuredResponse = await fetchPosts(Astro.url, { featured: true, pageSize: 1 });
+const featuredResponse = await fetchPosts(Astro.url, {
+    featured: true,
+    pageSize: 1,
+});
 const latestResponse = await fetchPosts(Astro.url, { pageSize: 6 });
 
-const featuredPost = featuredResponse.items[0] ?? latestResponse.items[0] ?? null;
-const recentPosts = latestResponse.items.filter((post) => post.slug !== featuredPost?.slug).slice(0, 3);
+const featuredPost =
+    featuredResponse.items[0] ?? latestResponse.items[0] ?? null;
+const recentPosts = latestResponse.items
+    .filter((post) => post.slug !== featuredPost?.slug)
+    .slice(0, 3);
 const categories = latestResponse.categories;
 ---
 
 <BaseLayout
-  title="TopHeroes Hub | Guides, references, and tutorials"
-  description="Professional TopHeroes guides, references, and strategy articles powered by SonicJS and Astro."
+    title="TopHeroes Hub | Guides, references, and tutorials"
+    description="Professional TopHeroes guides, references, and strategy articles powered by SonicJS and Astro."
 >
-  <SiteHeader />
+    <SiteHeader />
 
-  <main class="mx-auto flex w-full max-w-7xl flex-col gap-10 px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+    <main
+        class="mx-auto flex w-full max-w-7xl flex-col gap-10 px-4 py-8 sm:px-6 lg:px-8 lg:py-10"
+    >
+        <SearchPanel action="/posts" categories={categories} />
 
-    <SearchPanel action="/posts" categories={categories} />
+        {
+            featuredPost && (
+                <section class="space-y-5">
+                    <div class="flex items-end justify-between">
+                        <div>
+                            <p class="section-kicker">Featured Route</p>
+                            <h2 class="mt-2 text-3xl font-semibold text-[var(--text)]">
+                                Start with a high-value guide
+                            </h2>
+                        </div>
+                        <a
+                            href="/posts"
+                            class="text-sm font-semibold text-[var(--accent)]"
+                        >
+                            View all articles
+                        </a>
+                    </div>
+                    <PostCard post={featuredPost} variant="featured" />
+                </section>
+            )
+        }
 
-    {featuredPost && (
-      <section class="space-y-5">
-        <div class="flex items-end justify-between">
-          <div>
-            <p class="text-xs uppercase tracking-[0.35em] text-[var(--muted)]">Featured</p>
-            <h2 class="mt-2 text-3xl font-semibold text-[var(--text)]">Start here</h2>
-          </div>
-          <a href="/posts" class="text-sm font-semibold text-[var(--accent-strong)]">
-            View all articles
-          </a>
-        </div>
-        <PostCard post={featuredPost} variant="featured" />
-      </section>
-    )}
-
-    <section class="space-y-5">
-      <div>
-        <p class="text-xs uppercase tracking-[0.35em] text-[var(--muted)]">Latest updates</p>
-        <h2 class="mt-2 text-3xl font-semibold text-[var(--text)]">Recent articles</h2>
-      </div>
-      <div class="grid gap-5 lg:grid-cols-3">
-        {recentPosts.map((post) => (
-          <PostCard post={post} />
-        ))}
-      </div>
-    </section>
-  </main>
+        <section class="space-y-5">
+            <div>
+                <p class="section-kicker">Latest Drops</p>
+                <h2 class="mt-2 text-3xl font-semibold text-[var(--text)]">
+                    Recent articles
+                </h2>
+            </div>
+            <div class="grid gap-5 lg:grid-cols-3">
+                {recentPosts.map((post) => <PostCard post={post} />)}
+            </div>
+        </section>
+    </main>
 </BaseLayout>

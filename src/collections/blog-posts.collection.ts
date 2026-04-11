@@ -34,7 +34,7 @@ export default {
         helpText: 'A short summary of the post'
       },
       content: {
-        type: 'tinymce',
+        type: 'quill',
         title: 'Content',
         required: true
       },
@@ -50,10 +50,10 @@ export default {
       category: {
         type: 'select',
         title: 'Category',
-        enum: ['guides', 'references', 'tutorials', 'news'],
-        enumLabels: ['Guides', 'References', 'Tutorials', 'News'],
+        enum: ['guide', 'events', 'tutorials', 'season-1', 'season-2', 'season-3'],
+        enumLabels: ['Guide', 'Events', 'Tutorials', 'Season 1', 'Season 2', 'Season 3'],
         required: true,
-        default: 'guides'
+        default: 'guide'
       },
       publishedAt: {
         type: 'datetime',
