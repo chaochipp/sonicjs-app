@@ -96,6 +96,96 @@ function buildAdminQuillOverrideScript(): string {
     return new File([bytes], fallbackName + '.' + extension, { type: mimeType })
   }
 
+  function getClipboardHtml(event) {
+    return event.clipboardData?.getData('text/html') || ''
+  }
+
+  function getClipboardText(event) {
+    return event.clipboardData?.getData('text/plain') || ''
+  }
+
+  function stripImagesFromHtml(html) {
+    if (typeof html !== 'string' || !html) {
+      return ''
+    }
+
+    return html.replace(/<img[^>]*>/gi, ' ')
+  }
+
+  function isMixedClipboardPaste(event, entries) {
+    if (!Array.isArray(entries) || entries.length === 0) {
+      return false
+    }
+
+    const htmlWithoutImages = stripImagesFromHtml(getClipboardHtml(event))
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+
+    if (htmlWithoutImages) {
+      return true
+    }
+
+    return getClipboardText(event).trim().length > 0
+  }
+
+  function removeTransientBase64Images(quill, dataUrls) {
+    if (!quill || !quill.root || !Array.isArray(dataUrls) || dataUrls.length === 0) {
+      return false
+    }
+
+    let removed = false
+    const knownDataUrls = new Set(dataUrls.filter((dataUrl) => typeof dataUrl === 'string' && dataUrl.startsWith('data:image/')))
+
+    if (knownDataUrls.size === 0) {
+      return false
+    }
+
+    quill.root.querySelectorAll('img').forEach((image) => {
+      const src = image.getAttribute('src') || ''
+      if (!knownDataUrls.has(src)) {
+        return
+      }
+
+      image.remove()
+      removed = true
+    })
+
+    if (removed && typeof quill.update === 'function') {
+      quill.update('silent')
+    }
+
+    return removed
+  }
+
+  function collectMatchingImageCounts(root, dataUrls) {
+    const counts = new Map()
+    if (!root || !Array.isArray(dataUrls) || dataUrls.length === 0) {
+      return counts
+    }
+
+    const knownDataUrls = new Set(dataUrls.filter((dataUrl) => typeof dataUrl === 'string' && dataUrl.startsWith('data:image/')))
+    root.querySelectorAll('img').forEach((image) => {
+      const src = image.getAttribute('src') || ''
+      if (!knownDataUrls.has(src)) {
+        return
+      }
+
+      counts.set(src, (counts.get(src) || 0) + 1)
+    })
+
+    return counts
+  }
+
+  function findNewMatchingImages(root, dataUrl, baselineCount) {
+    if (!root || typeof dataUrl !== 'string' || !dataUrl.startsWith('data:image/')) {
+      return []
+    }
+
+    const matches = Array.from(root.querySelectorAll('img')).filter((image) => (image.getAttribute('src') || '') === dataUrl)
+    return matches.slice(baselineCount)
+  }
+
   async function insertUploadedImage(quill, file) {
     const range = quill.getSelection(true)
     const imageUrl = await uploadImageFile(file)
@@ -105,9 +195,39 @@ function buildAdminQuillOverrideScript(): string {
     quill.setSelection(insertIndex + 1, 0, 'silent')
   }
 
-  async function handleImageFiles(quill, files) {
-    for (const file of files) {
-      await insertUploadedImage(quill, file)
+  async function handleImageUploads(quill, entries) {
+    for (const entry of entries) {
+      await insertUploadedImage(quill, entry.file)
+    }
+
+    removeTransientBase64Images(quill, entries.map((entry) => entry.dataUrl))
+  }
+
+  async function replacePastedBase64Images(quill, entries, baselineCounts) {
+    if (!quill || !quill.root || !Array.isArray(entries) || entries.length === 0) {
+      return
+    }
+
+    for (const entry of entries) {
+      if (!entry || typeof entry.dataUrl !== 'string' || !entry.dataUrl.startsWith('data:image/')) {
+        continue
+      }
+
+      const baselineCount = baselineCounts instanceof Map ? (baselineCounts.get(entry.dataUrl) || 0) : 0
+      const imagesToReplace = findNewMatchingImages(quill.root, entry.dataUrl, baselineCount)
+
+      if (imagesToReplace.length === 0) {
+        continue
+      }
+
+      const imageUrl = await uploadImageFile(entry.file)
+      imagesToReplace.forEach((image) => {
+        image.setAttribute('src', imageUrl)
+      })
+    }
+
+    if (typeof quill.update === 'function') {
+      quill.update('silent')
     }
   }
 
@@ -119,7 +239,7 @@ function buildAdminQuillOverrideScript(): string {
       .filter(Boolean)
 
     if (files.length > 0) {
-      return files
+      return files.map((file) => ({ file, dataUrl: null }))
     }
 
     const html = event.clipboardData?.getData('text/html') || ''
@@ -129,86 +249,73 @@ function buildAdminQuillOverrideScript(): string {
 
     const matches = Array.from(html.matchAll(/<img[^>]+src=(['"])(data:image\\/[^'"]+)\\1/gi))
     return matches
-      .map((match, index) => dataUrlToFile(match[2], 'pasted-image-' + (index + 1)))
+      .map((match, index) => {
+        const file = dataUrlToFile(match[2], 'pasted-image-' + (index + 1))
+        return file ? { file, dataUrl: match[2] } : null
+      })
       .filter(Boolean)
   }
 
   function extractImageFilesFromDrop(event) {
-    return Array.from(event.dataTransfer?.files || []).filter((file) => file.type.startsWith('image/'))
+    return Array.from(event.dataTransfer?.files || [])
+      .filter((file) => file.type.startsWith('image/'))
+      .map((file) => ({ file, dataUrl: null }))
   }
 
   function attachImageUploadHandlers(quill) {
     if (!quill || quill.__topheroesImageUploadHandlersApplied || !quill.root) return
 
     const onPaste = async (event) => {
-      const files = extractImageFilesFromClipboard(event)
-      if (files.length === 0) {
+      const entries = extractImageFilesFromClipboard(event)
+      if (entries.length === 0) {
         return
       }
 
-      event.preventDefault()
+      if (!isMixedClipboardPaste(event, entries)) {
+        event.preventDefault()
+        event.stopImmediatePropagation()
 
-      try {
-        await handleImageFiles(quill, files)
-      } catch (error) {
-        console.error('TopHeroes image paste upload failed:', error)
-        notifyUploadIssue('Image paste upload failed. Please try again or upload through Media first.')
+        try {
+          await handleImageUploads(quill, entries)
+        } catch (error) {
+          console.error('TopHeroes image paste upload failed:', error)
+          notifyUploadIssue('Image paste upload failed. Please try again or upload through Media first.')
+        }
+        return
       }
+
+      const baselineCounts = collectMatchingImageCounts(quill.root, entries.map((entry) => entry.dataUrl))
+
+      window.setTimeout(async () => {
+        try {
+          await replacePastedBase64Images(quill, entries, baselineCounts)
+        } catch (error) {
+          console.error('TopHeroes mixed-content image paste upload failed:', error)
+          notifyUploadIssue('Image paste upload failed. Please try again or upload through Media first.')
+        }
+      }, 0)
     }
 
     const onDrop = async (event) => {
-      const files = extractImageFilesFromDrop(event)
-      if (files.length === 0) {
+      const entries = extractImageFilesFromDrop(event)
+      if (entries.length === 0) {
         return
       }
 
       event.preventDefault()
+      event.stopImmediatePropagation()
 
       try {
-        await handleImageFiles(quill, files)
+        await handleImageUploads(quill, entries)
       } catch (error) {
         console.error('TopHeroes image drop upload failed:', error)
         notifyUploadIssue('Image drop upload failed. Please try again or upload through Media first.')
       }
     }
 
-    quill.root.addEventListener('paste', onPaste)
-    quill.root.addEventListener('drop', onDrop)
+    quill.root.addEventListener('paste', onPaste, true)
+    quill.root.addEventListener('drop', onDrop, true)
     quill.__topheroesImageUploadHandlersApplied = true
-  }
-
-  function stripBase64ImagesFromHtml(html) {
-    if (typeof html !== 'string' || html.indexOf('data:image/') === -1) {
-      return { html, removed: false }
-    }
-
-    let removed = false
-    const nextHtml = html.replace(/<img[^>]+src=(['"])data:image\\/[^'"]+\\1[^>]*>/gi, () => {
-      removed = true
-      return ''
-    })
-
-    return { html: nextHtml, removed }
-  }
-
-  function sanitizeEditorHtml(quill, hiddenInput) {
-    if (!quill || !quill.root) return false
-
-    const currentHtml = quill.root.innerHTML || ''
-    const result = stripBase64ImagesFromHtml(currentHtml)
-
-    if (!result.removed) {
-      if (hiddenInput) {
-        hiddenInput.value = currentHtml
-      }
-      return false
-    }
-
-    quill.root.innerHTML = result.html
-    if (hiddenInput) {
-      hiddenInput.value = result.html
-    }
-    return true
   }
 
   function stripPasteColors(quill) {
@@ -229,10 +336,6 @@ function buildAdminQuillOverrideScript(): string {
 
       return new Delta(
         delta.ops.flatMap((op) => {
-          if (op && op.insert && typeof op.insert === 'object' && typeof op.insert.image === 'string' && op.insert.image.startsWith('data:image/')) {
-            return []
-          }
-
           if (!op || !op.attributes) {
             return [op]
           }
@@ -260,12 +363,9 @@ function buildAdminQuillOverrideScript(): string {
   function applyQuillOverrides() {
     document.querySelectorAll('.quill-editor').forEach((editorEl) => {
       const quill = editorEl.quillInstance
-      const fieldId = editorEl.id ? editorEl.id.replace(/^editor-/, '') : ''
-      const hiddenInput = fieldId ? document.getElementById(fieldId) : null
 
       stripPasteColors(quill)
       attachImageUploadHandlers(quill)
-      sanitizeEditorHtml(quill, hiddenInput)
     })
   }
 

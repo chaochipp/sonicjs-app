@@ -4,10 +4,18 @@ import SearchPanel from "../components/SearchPanel.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { fetchPosts } from "../lib/public-api";
+import { resolveHomepageSections } from "../lib/public-content";
 
-const response = await fetchPosts(Astro.url, { pageSize: 12 });
-const articles = response.items;
-const categories = response.categories;
+const [featuredResponse, recentResponse] = await Promise.all([
+    fetchPosts(Astro.url, { featured: true, pageSize: 2 }),
+    fetchPosts(Astro.url, { pageSize: 12 }),
+]);
+const categories = recentResponse.categories;
+const { featuredPosts, recentPosts } = resolveHomepageSections(
+    featuredResponse.items,
+    recentResponse.items,
+    2,
+);
 ---
 
 <BaseLayout
@@ -21,13 +29,48 @@ const categories = response.categories;
     >
         <SearchPanel action="/posts" categories={categories} />
 
+        {
+            featuredPosts.length > 0 && (
+                <section class="space-y-5" aria-labelledby="featured-posts-heading">
+                    <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                        <div>
+                            <p class="section-kicker">Featured Posts</p>
+                            <h2
+                                id="featured-posts-heading"
+                                class="mt-2 text-3xl font-semibold text-[var(--text)]"
+                            >
+                                Featured strategies and key updates
+                            </h2>
+                        </div>
+                        <a
+                            href="/posts"
+                            class="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--accent)]"
+                        >
+                            View archive
+                        </a>
+                    </div>
+
+                    <div class="grid gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.8fr)]">
+                        <PostCard post={featuredPosts[0]} variant="featured" />
+                        {
+                            featuredPosts[1] && (
+                                <div class="flex">
+                                    <PostCard post={featuredPosts[1]} />
+                                </div>
+                            )
+                        }
+                    </div>
+                </section>
+            )
+        }
+
         <section class="space-y-5">
             <div>
                 <p class="section-kicker">All Articles</p>
                 <h2 class="mt-2 text-3xl font-semibold text-[var(--text)]">Browse all articles</h2>
             </div>
             <div class="grid gap-5 lg:grid-cols-3">
-                {articles.map((post) => <PostCard post={post} />)}
+                {recentPosts.map((post) => <PostCard post={post} />)}
             </div>
         </section>
     </main>

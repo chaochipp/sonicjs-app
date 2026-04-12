@@ -38,6 +38,11 @@ export type PublicCategory = {
   count: number
 }
 
+export type HomepageSections = {
+  featuredPosts: PublicPost[]
+  recentPosts: PublicPost[]
+}
+
 export type PostListParams = {
   q?: string
   category?: string
@@ -316,4 +321,18 @@ export function resolveRelatedPosts(posts: PublicPost[], currentSlug: string, ca
   return posts
     .filter((post) => post.slug !== currentSlug && post.categorySlug === categorySlug)
     .slice(0, 3)
+}
+
+export function resolveHomepageSections(
+  featuredPosts: PublicPost[],
+  recentPosts: PublicPost[],
+  maxFeaturedPosts = 2
+): HomepageSections {
+  const featured = featuredPosts.slice(0, maxFeaturedPosts)
+  const featuredIds = new Set(featured.map((post) => post.id))
+
+  return {
+    featuredPosts: featured,
+    recentPosts: recentPosts.filter((post) => !featuredIds.has(post.id))
+  }
 }
