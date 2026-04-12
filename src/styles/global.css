@@ -1,36 +1,36 @@
 @import "tailwindcss";
 
 :root {
-  --page-bg: #0a1325;
-  --page-bg-deep: #060b16;
-  --page-bg-soft: #101d37;
-  --panel: linear-gradient(180deg, rgba(18, 31, 58, 0.88), rgba(9, 18, 36, 0.92));
-  --panel-strong: linear-gradient(180deg, rgba(22, 38, 70, 0.96), rgba(9, 18, 36, 0.98));
-  --line: rgba(112, 191, 255, 0.18);
-  --line-strong: rgba(112, 191, 255, 0.36);
-  --text: #eef5ff;
-  --muted: #9eb4d6;
-  --accent: #59d6ff;
-  --accent-strong: #ff9052;
-  --accent-soft: rgba(89, 214, 255, 0.14);
-  --accent-lime: #a7ff70;
-  --shadow: 0 30px 80px rgba(2, 8, 20, 0.48);
+  --page-bg: #f8e5c5;
+  --page-bg-deep: #efcf9e;
+  --page-bg-soft: #fff5e6;
+  --panel: linear-gradient(180deg, rgba(255, 246, 230, 0.96), rgba(247, 227, 192, 0.98));
+  --panel-strong: linear-gradient(180deg, rgba(255, 250, 240, 0.98), rgba(244, 220, 181, 1));
+  --line: rgba(157, 105, 49, 0.2);
+  --line-strong: rgba(157, 105, 49, 0.34);
+  --text: #5b3419;
+  --muted: #926745;
+  --accent: #4faaf8;
+  --accent-strong: #f1723e;
+  --accent-soft: rgba(79, 170, 248, 0.14);
+  --accent-lime: #9ccc4c;
+  --shadow: 0 24px 50px rgba(146, 99, 47, 0.18);
 }
 
 html {
   background:
-    radial-gradient(circle at 18% 12%, rgba(89, 214, 255, 0.2), transparent 22%),
-    radial-gradient(circle at 82% 8%, rgba(255, 144, 82, 0.16), transparent 20%),
-    linear-gradient(180deg, #101c35 0%, var(--page-bg) 36%, var(--page-bg-deep) 100%);
+    radial-gradient(circle at 18% 12%, rgba(79, 170, 248, 0.18), transparent 22%),
+    radial-gradient(circle at 82% 8%, rgba(241, 114, 62, 0.14), transparent 20%),
+    linear-gradient(180deg, #fff7ea 0%, var(--page-bg) 40%, var(--page-bg-deep) 100%);
   color: var(--text);
   scroll-behavior: smooth;
 }
 
 body {
   min-height: 100vh;
-  font-family: "Space Grotesk", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 1rem;
-  line-height: 1.6;
+  font-family: "Nunito", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 1.06rem;
+  line-height: 1.72;
 }
 
 h1,
@@ -39,8 +39,8 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Oxanium", "Space Grotesk", sans-serif;
-  letter-spacing: -0.03em;
+  font-family: "Fredoka", "Nunito", sans-serif;
+  letter-spacing: -0.02em;
 }
 
 .app-shell {
@@ -54,12 +54,9 @@ h6 {
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(rgba(112, 191, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(112, 191, 255, 0.05) 1px, transparent 1px),
-    radial-gradient(circle at 20% 10%, rgba(89, 214, 255, 0.1), transparent 22%),
-    radial-gradient(circle at 80% 0%, rgba(255, 144, 82, 0.08), transparent 18%);
-  background-size: 44px 44px, 44px 44px, auto, auto;
-  opacity: 0.55;
+    radial-gradient(circle at 20% 10%, rgba(79, 170, 248, 0.1), transparent 22%),
+    radial-gradient(circle at 80% 0%, rgba(241, 114, 62, 0.08), transparent 18%);
+  opacity: 0.85;
 }
 
 .prose-content {
@@ -78,18 +75,18 @@ h6 {
 }
 
 .prose-content h2 {
-  font-size: 1.9rem;
+  font-size: 2.1rem;
 }
 
 .prose-content h3 {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
 }
 
 .prose-content p,
 .prose-content li {
-  color: rgba(238, 245, 255, 0.88);
-  font-size: 1.05rem;
-  line-height: 1.8;
+  color: rgba(91, 52, 25, 0.92);
+  font-size: 1.14rem;
+  line-height: 1.88;
 }
 
 .prose-content p,
@@ -113,40 +110,40 @@ h6 {
 }
 
 .prose-content blockquote {
-  border-left: 4px solid rgba(89, 214, 255, 0.5);
+  border-left: 4px solid rgba(79, 170, 248, 0.55);
   padding: 0.2rem 0 0.2rem 1rem;
   color: var(--muted);
-  background: rgba(89, 214, 255, 0.06);
+  background: rgba(79, 170, 248, 0.08);
   border-radius: 0 1rem 1rem 0;
 }
 
 .prose-content img {
   border-radius: 1.25rem;
   margin-block: 2rem;
-  border: 1px solid rgba(112, 191, 255, 0.18);
-  box-shadow: 0 18px 50px rgba(2, 8, 20, 0.35);
+  border: 2px solid rgba(157, 105, 49, 0.16);
+  box-shadow: 0 18px 38px rgba(146, 99, 47, 0.16);
 }
 
 .prose-content code {
   border-radius: 0.5rem;
-  background: rgba(167, 255, 112, 0.12);
+  background: rgba(156, 204, 76, 0.16);
   padding: 0.15rem 0.4rem;
-  color: var(--accent-lime);
+  color: #6f8d24;
 }
 
 .prose-content pre {
   overflow-x: auto;
   border-radius: 1rem;
-  border: 1px solid rgba(112, 191, 255, 0.16);
-  background: rgba(4, 11, 24, 0.92);
+  border: 2px solid rgba(157, 105, 49, 0.12);
+  background: rgba(255, 249, 239, 0.95);
   padding: 1rem 1.1rem;
 }
 
 .soft-panel {
   background: var(--panel);
-  border: 1px solid var(--line);
+  border: 2px solid rgba(182, 128, 69, 0.22);
   box-shadow: var(--shadow);
-  backdrop-filter: blur(18px);
+  backdrop-filter: blur(10px);
   position: relative;
 }
 
@@ -156,21 +153,21 @@ h6 {
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.48);
 }
 
 .hero-panel {
   background:
-    radial-gradient(circle at top right, rgba(255, 144, 82, 0.14), transparent 24%),
-    radial-gradient(circle at top left, rgba(89, 214, 255, 0.16), transparent 24%),
+    radial-gradient(circle at top right, rgba(241, 114, 62, 0.14), transparent 24%),
+    radial-gradient(circle at top left, rgba(79, 170, 248, 0.16), transparent 24%),
     var(--panel-strong);
 }
 
 .section-kicker {
-  color: var(--accent);
-  font-size: 0.78rem;
+  color: #b77236;
+  font-size: 0.82rem;
   font-weight: 700;
-  letter-spacing: 0.32em;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
 }
 
@@ -181,27 +178,79 @@ h6 {
 }
 
 .action-button {
-  background: linear-gradient(135deg, var(--accent) 0%, #3ea4ff 100%);
-  color: #051120;
-  box-shadow: 0 12px 30px rgba(89, 214, 255, 0.24);
+  background: linear-gradient(180deg, #5db7ff 0%, #4194e5 100%);
+  border: 2px solid #2f76b8;
+  color: #fffef9;
+  box-shadow: 0 8px 0 #2f76b8, 0 15px 20px rgba(79, 170, 248, 0.2);
+  transform: translateY(0);
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    filter 160ms ease;
 }
 
 .action-button:hover {
-  filter: brightness(1.04);
+  filter: brightness(1.03);
+  transform: translateY(-1px);
+  box-shadow: 0 9px 0 #2f76b8, 0 18px 24px rgba(79, 170, 248, 0.22);
 }
 
 .secondary-button {
-  border: 1px solid var(--line-strong);
-  background: rgba(255, 255, 255, 0.03);
+  border: 2px solid #d7a56f;
+  background: rgba(255, 249, 239, 0.9);
   color: var(--text);
+  box-shadow: 0 6px 0 rgba(199, 147, 90, 0.8);
+  transform: translateY(0);
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease;
 }
 
 .secondary-button:hover {
-  border-color: rgba(89, 214, 255, 0.45);
-  background: rgba(89, 214, 255, 0.08);
+  border-color: #c98d4e;
+  background: #fff8ed;
+  transform: translateY(-1px);
+  box-shadow: 0 7px 0 rgba(199, 147, 90, 0.78);
+}
+
+.tag-rarity-rare {
+  border-color: rgba(74, 143, 235, 0.36);
+  background: rgba(74, 143, 235, 0.12);
+  color: #3a6ca8;
+}
+
+.tag-rarity-epic {
+  border-color: rgba(183, 92, 222, 0.32);
+  background: rgba(183, 92, 222, 0.12);
+  color: #8d44ac;
+}
+
+.tag-rarity-legendary {
+  border-color: rgba(239, 173, 42, 0.35);
+  background: rgba(239, 173, 42, 0.14);
+  color: #a86a1d;
+}
+
+.tag-rarity-mythic {
+  border-color: rgba(232, 96, 65, 0.36);
+  background: rgba(232, 96, 65, 0.14);
+  color: #b2472d;
 }
 
 ::selection {
-  background: rgba(89, 214, 255, 0.3);
-  color: white;
+  background: rgba(79, 170, 248, 0.28);
+  color: #4c2b15;
+}
+
+@media (min-width: 1024px) {
+  body {
+    font-size: 1.12rem;
+  }
+
+  .prose-content p,
+  .prose-content li {
+    font-size: 1.22rem;
+  }
 }

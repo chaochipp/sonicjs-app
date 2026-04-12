@@ -2,37 +2,32 @@
 const links = [
     { href: "/", label: "Home" },
     { href: "/posts", label: "All Articles" },
-    { href: "/categories/guides", label: "Guides" },
-    { href: "/categories/references", label: "References" },
+    { href: "/categories/guide", label: "Guide" },
+    { href: "/categories/events", label: "Events" },
     { href: "/categories/tutorials", label: "Tutorials" },
 ];
 ---
 
-<header class="mx-auto w-full max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
-    <div class="soft-panel hero-panel rounded-[1.75rem] px-5 py-4 sm:px-7">
+<header class="mx-auto w-full max-w-7xl px-4 pt-4 sm:px-6 lg:px-8">
+    <div class="soft-panel hero-panel rounded-[1.5rem] px-4 py-3 sm:px-6">
         <div
-            class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
+            class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"
         >
-            <a href="/" class="flex items-center gap-3 text-[var(--text)]">
+            <a href="/" class="flex items-center gap-4 text-[var(--text)]">
                 <span
-                    class="flex h-12 w-[7.5rem] items-center justify-center overflow-hidden rounded-[1rem] border border-[var(--line)] bg-[rgba(4,10,22,0.84)] px-2 shadow-[0_10px_24px_rgba(89,214,255,0.12)]"
+                    class="flex h-12 w-[7.5rem] items-center justify-center overflow-hidden rounded-[1rem] border-2 border-[#d8a76d] bg-[rgba(255,249,239,0.9)] px-2 shadow-[0_8px_0_rgba(199,147,90,0.75)]"
                 >
                     <img
                         src="https://static.wikia.nocookie.net/topheroes1/images/e/e6/Site-logo.png/revision/latest?cb=20240909103921"
                         alt="Top Heroes"
-                        class="h-10 w-auto object-contain"
+                        class="h-9 w-auto object-contain"
                         loading="eager"
                         decoding="async"
                     />
                 </span>
                 <div>
-                    <p
-                        class="text-xs uppercase tracking-[0.35em] text-[var(--accent)]"
-                    >
-                        TopHeroes Knowledge Base
-                    </p>
-                    <p class="text-xl font-semibold">
-                        Build paths, hero tech, and progression intel
+                    <p class="text-lg font-semibold lg:text-[1.45rem]">
+                        By OLP clan on server 774
                     </p>
                 </div>
             </a>
@@ -44,7 +39,7 @@ const links = [
                     links.map((link) => (
                         <a
                             href={link.href}
-                            class="secondary-button rounded-xl px-4 py-2 transition"
+                            class="secondary-button rounded-xl px-3 py-2 transition"
                         >
                             {link.label}
                         </a>
@@ -52,7 +47,7 @@ const links = [
                 }
                 <a
                     href="/admin"
-                    class="action-button rounded-xl px-4 py-2 font-semibold transition"
+                    class="action-button rounded-xl px-3 py-2 font-semibold transition"
                 >
                     CMS
                 </a>

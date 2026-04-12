@@ -8,18 +8,24 @@ interface Props {
 
 const { post, variant = "default" } = Astro.props;
 const featured = variant === "featured";
+const tagRarityClasses = [
+  "tag-rarity-rare",
+  "tag-rarity-epic",
+  "tag-rarity-legendary",
+  "tag-rarity-mythic"
+];
 ---
 
 <article class:list={[
-  "group soft-panel relative overflow-hidden rounded-[1.6rem] transition duration-300 hover:-translate-y-1.5 hover:shadow-2xl",
-  featured ? "p-7 sm:p-8" : "p-6"
+  "group soft-panel relative overflow-hidden rounded-[1.8rem] transition duration-300 hover:-translate-y-1.5 hover:shadow-2xl",
+  featured ? "p-8 sm:p-9" : "p-7"
 ]}>
   <div class="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[var(--accent)] via-[var(--accent-lime)] to-[var(--accent-strong)] opacity-70"></div>
   <a href={`/posts/${post.slug}`} class="absolute inset-0 z-10" aria-label={`Read ${post.title}`}></a>
 
   <div class="relative z-0 space-y-4">
-    <div class="flex flex-wrap items-center gap-3 text-[0.75rem] font-semibold uppercase tracking-[0.28em] text-[var(--muted)]">
-      <span class="rounded-xl bg-[var(--accent-soft)] px-3 py-1 text-[var(--text)] ring-1 ring-[var(--line)]">
+    <div class="flex flex-wrap items-center gap-3 text-[0.82rem] font-semibold uppercase tracking-[0.28em] text-[var(--muted)]">
+      <span class="rounded-[1rem] bg-[var(--accent-soft)] px-3 py-1 text-[var(--text)] ring-1 ring-[var(--line)]">
         {formatCategoryLabel(post.category)}
       </span>
       <span>{post.publishedAtLabel}</span>
@@ -29,13 +35,13 @@ const featured = variant === "featured";
     <div class="space-y-3">
       <h2 class:list={[
         "font-semibold leading-tight text-[var(--text)] transition group-hover:text-[var(--accent)]",
-        featured ? "max-w-4xl text-4xl sm:text-5xl" : "text-2xl"
+        featured ? "max-w-4xl text-5xl sm:text-6xl" : "text-[2rem]"
       ]}>
         {post.title}
       </h2>
       <p class:list={[
         "max-w-3xl text-[var(--muted)]",
-        featured ? "text-lg leading-9" : "text-base leading-8"
+        featured ? "text-xl leading-10" : "text-lg leading-9"
       ]}>
         {post.excerpt}
       </p>
@@ -44,14 +50,17 @@ const featured = variant === "featured";
     {post.tags.length > 0 && (
       <div class="flex flex-wrap gap-2">
         {post.tags.slice(0, featured ? 4 : 3).map((tag) => (
-          <span class="rounded-xl border border-[var(--line)] bg-[rgba(255,255,255,0.03)] px-3 py-1 text-xs text-[var(--muted)]">
+          <span class:list={[
+            "rounded-[1rem] border px-3 py-1 text-sm font-semibold",
+            tagRarityClasses[post.tags.indexOf(tag) % tagRarityClasses.length]
+          ]}>
             {tag}
           </span>
         ))}
       </div>
     )}
 
-    <div class="flex items-center justify-between border-t border-[var(--line)] pt-3 text-sm font-medium text-[var(--accent)]">
+    <div class="flex items-center justify-between border-t border-[var(--line)] pt-4 text-base font-medium text-[var(--accent)]">
       <span>Open guide</span>
       <span class="transition duration-300 group-hover:translate-x-1">→</span>
     </div>

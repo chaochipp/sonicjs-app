@@ -1,6 +1,7 @@
 import handler from '@astrojs/cloudflare/entrypoints/server'
 
 import sonicApp from './index'
+import { injectAdminRuntimeOverrides } from './lib/admin-runtime-overrides'
 import publicContentApi from './routes/public-content'
 import { syncTinyMceApiKey } from './lib/tinymce-settings'
 
@@ -23,6 +24,35 @@ function ensureTinyMceApiKey(env: Bindings) {
   }
 
   return tinyMceSyncPromise
+}
+
+async function maybeInjectAdminOverrides(request: Request, response: Response): Promise<Response> {
+  const { pathname } = new URL(request.url)
+  const contentType = response.headers.get('content-type') ?? ''
+
+  if (!pathname.startsWith('/admin') || !contentType.includes('text/html')) {
+    return response
+  }
+
+  const html = await response.text()
+  const nextHtml = injectAdminRuntimeOverrides(html)
+
+  if (nextHtml === html) {
+    return new Response(html, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers
+    })
+  }
+
+  const headers = new Headers(response.headers)
+  headers.delete('content-length')
+
+  return new Response(nextHtml, {
+    status: response.status,
+    statusText: response.statusText,
+    headers
+  })
 }
 
 export default {
@@ -51,7 +81,8 @@ export default {
       pathname === '/media' ||
       pathname.startsWith('/media/')
     ) {
-      return sonicApp.fetch(request, env, ctx)
+      const response = await sonicApp.fetch(request, env, ctx)
+      return maybeInjectAdminOverrides(request, response)
     }
 
     return handler.fetch(request, env, ctx)
