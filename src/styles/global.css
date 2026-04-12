@@ -28,7 +28,7 @@ html {
 
 body {
   min-height: 100vh;
-  font-family: "Nunito", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Be Vietnam Pro", "Nunito", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 1.06rem;
   line-height: 1.72;
 }
@@ -39,8 +39,8 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Fredoka", "Nunito", sans-serif;
-  letter-spacing: -0.02em;
+  font-family: "Be Vietnam Pro", "Nunito", "Segoe UI", sans-serif;
+  letter-spacing: -0.025em;
 }
 
 .app-shell {

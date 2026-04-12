@@ -24,6 +24,17 @@ const tagRarityClasses = [
   <a href={`/posts/${post.slug}`} class="absolute inset-0 z-10" aria-label={`Read ${post.title}`}></a>
 
   <div class="relative z-0 space-y-4">
+    {!featured && post.featuredImage && (
+      <div class="-mx-7 -mt-7 overflow-hidden border-b border-[var(--line)]">
+        <img
+          src={post.featuredImage}
+          alt={post.featuredImageAlt}
+          class="h-48 w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+          loading="lazy"
+        />
+      </div>
+    )}
+
     <div class="flex flex-wrap items-center gap-3 text-[0.82rem] font-semibold uppercase tracking-[0.28em] text-[var(--muted)]">
       <span class="rounded-[1rem] bg-[var(--accent-soft)] px-3 py-1 text-[var(--text)] ring-1 ring-[var(--line)]">
         {formatCategoryLabel(post.category)}

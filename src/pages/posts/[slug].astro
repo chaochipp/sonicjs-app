@@ -38,6 +38,17 @@ const related = response?.related ?? [];
             <h1 class="mt-5 max-w-4xl text-4xl font-semibold leading-[1.02] text-[var(--text)] sm:text-6xl">{post.title}</h1>
             <p class="mt-5 max-w-3xl text-lg leading-9 text-[var(--muted)]">{post.excerpt}</p>
 
+            {post.featuredImage && (
+              <div class="mt-8 max-w-3xl overflow-hidden rounded-[1.5rem] border border-[var(--line)] bg-[rgba(255,255,255,0.5)]">
+                <img
+                  src={post.featuredImage}
+                  alt={post.featuredImageAlt}
+                  class="h-56 w-full object-cover sm:h-64"
+                  loading="eager"
+                />
+              </div>
+            )}
+
             <div class="prose-content mt-10" set:html={post.contentHtml} />
           </div>
         </article>
