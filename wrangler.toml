@@ -28,7 +28,7 @@ ENVIRONMENT = "development"
 
 # Production environment
 [env.production]
-name = "sonicjs-app-production"
+name = "sonicjs-app"
 vars = { ENVIRONMENT = "production" }
 routes = [
   { pattern = "topheroes.cwcat.com", custom_domain = true }
@@ -47,20 +47,22 @@ bucket_name = "sonicjs-media"
 # Separate 774 environment
 [env.server774]
 name = "774topheroes"
-vars = { ENVIRONMENT = "server774" }
 routes = [
   { pattern = "774.cwcat.com", custom_domain = true }
 ]
 
+[env.server774.vars]
+ENVIRONMENT = "server774"
+
 [[env.server774.d1_databases]]
 binding = "DB"
 database_name = "sonicjs-db"
-database_id = "afd7dca7-7ba2-496a-b1ce-e15ee0cfc9a3"
+database_id = "d6967cf4-6c6e-4e73-8f87-98b6f1a68c2f"
 migrations_dir = "./node_modules/@sonicjs-cms/core/migrations"
 
 [[env.server774.r2_buckets]]
 binding = "MEDIA_BUCKET"
-bucket_name = "sonicjs-media"
+bucket_name = "774bucket"
 
 # Observability
 [observability]

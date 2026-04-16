@@ -7,7 +7,7 @@ This project now combines two layers in one Cloudflare Worker deployment:
 
 There are now two separate Worker deploy targets using the same codebase:
 
-- `sonicjs-app-production` for `topheroes.cwcat.com`
+- `sonicjs-app` for `topheroes.cwcat.com`
 - `774topheroes` for `774.cwcat.com`
 
 The intended production shape is:
@@ -118,12 +118,15 @@ npm run db:migrate:774
 
 The current Wrangler config includes separate worker targets:
 
-- `production` -> worker service `sonicjs-app-production` for `topheroes.cwcat.com`
+- `production` -> worker service `sonicjs-app` for `topheroes.cwcat.com`
 - `server774` -> worker service `774topheroes` for `774.cwcat.com`
 
 You still need the matching DNS and Cloudflare Worker domain bindings configured in your Cloudflare account.
 
-Before deploying `server774`, replace the placeholder `database_id` in `wrangler.toml` with the real D1 database ID used by the `774topheroes` worker.
+The current `server774` bindings in `wrangler.toml` point to:
+
+- D1 database id: `d6967cf4-6c6e-4e73-8f87-98b6f1a68c2f`
+- R2 bucket: `774bucket`
 
 Set the TinyMCE API key for production before deploying:
 
