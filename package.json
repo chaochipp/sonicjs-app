@@ -8,12 +8,15 @@
     "dev:worker": "wrangler dev",
     "build": "ASTRO_TELEMETRY_DISABLED=1 astro build",
     "preview": "wrangler dev",
-    "deploy": "ASTRO_TELEMETRY_DISABLED=1 astro build && wrangler deploy",
+    "deploy": "ASTRO_TELEMETRY_DISABLED=1 astro build && wrangler deploy --env production",
+    "deploy:production": "ASTRO_TELEMETRY_DISABLED=1 astro build && wrangler deploy --env production",
+    "deploy:774": "ASTRO_TELEMETRY_DISABLED=1 astro build && wrangler deploy --env server774",
     "test": "vitest run",
     "test:watch": "vitest",
     "e2e": "playwright test",
     "db:migrate": "wrangler d1 migrations apply DB --local",
-    "db:migrate:prod": "wrangler d1 migrations apply DB --remote"
+    "db:migrate:prod": "wrangler d1 migrations apply DB --remote --env production",
+    "db:migrate:774": "wrangler d1 migrations apply DB --remote --env server774"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.1.8",

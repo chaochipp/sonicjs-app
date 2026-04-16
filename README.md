@@ -5,10 +5,17 @@ This project now combines two layers in one Cloudflare Worker deployment:
 - A public Astro frontend for `topheroes.cwcat.com`
 - A SonicJS CMS mounted under `/api`
 
+There are now two separate Worker deploy targets using the same codebase:
+
+- `sonicjs-app-production` for `topheroes.cwcat.com`
+- `774topheroes` for `774.cwcat.com`
+
 The intended production shape is:
 
 - `https://topheroes.cwcat.com/` for the public site
 - `https://topheroes.cwcat.com/api` for the headless CMS and admin/API routes
+- `https://774.cwcat.com/` for the separate 774 site
+- `https://774.cwcat.com/api` for the separate 774 CMS and admin/API routes
 
 ## Stack
 
@@ -95,16 +102,45 @@ Build the Astro site and deploy the combined Worker:
 npm run deploy
 ```
 
-The current Wrangler config includes a production custom domain entry for `topheroes.cwcat.com`. You still need the matching DNS and Cloudflare Worker domain binding configured in your Cloudflare account.
+Available deploy targets:
+
+```bash
+npm run deploy:production
+npm run deploy:774
+```
+
+Apply remote migrations to the matching environment before first deploy:
+
+```bash
+npm run db:migrate:prod
+npm run db:migrate:774
+```
+
+The current Wrangler config includes separate worker targets:
+
+- `production` -> worker service `sonicjs-app-production` for `topheroes.cwcat.com`
+- `server774` -> worker service `774topheroes` for `774.cwcat.com`
+
+You still need the matching DNS and Cloudflare Worker domain bindings configured in your Cloudflare account.
+
+Before deploying `server774`, replace the placeholder `database_id` in `wrangler.toml` with the real D1 database ID used by the `774topheroes` worker.
 
 Set the TinyMCE API key for production before deploying:
 
 ```bash
-wrangler secret put TINYMCE_API_KEY
+wrangler secret put TINYMCE_API_KEY --env production
 ```
 
-Then redeploy:
+Set the same secret separately for the 774 environment if needed:
 
 ```bash
-npm run deploy
+wrangler secret put TINYMCE_API_KEY --env server774
+```
+
+Then deploy the target environment you want:
+
+```bash
+npm run deploy:production
+# or
+npm run deploy:774
 ```
