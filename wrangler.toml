@@ -1,4 +1,4 @@
-name = "sonicjs-app"
+name = "774topheroes"
 main = "src/worker.ts"
 compatibility_date = "2026-04-11"
 compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
